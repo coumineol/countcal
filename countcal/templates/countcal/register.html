@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Register</title>
+
+</head>
+
+<body>
+
+    <form method="POST" action="/countcal/registered/">{% csrf_token %}
+
+        <p><label for="username">Username: </label><input type="text" id="username" name="username"></p>
+        <p><label for="password">Password: </label><input type="text" id="password" name="password"></p>
+        <p><label>Group: </label><input type="radio" id="group1" name="group" value="peon">peon <input type="radio" id="group2" name="group" value="exterminator">exterminator</p>
+        <p><input type="submit" value="Register"></p>
+
+    </form>
+
+</body>
+
+</html>

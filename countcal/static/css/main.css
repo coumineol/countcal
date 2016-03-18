@@ -1,0 +1,49 @@
+.meal {
+    padding-top: 10px;
+}
+
+.editdelete {
+    margin-left: 26px;
+}
+
+#header {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#create_button {
+    margin-top: 50px;
+    margin-left: 10px;
+}
+
+form {
+    margin-top: 5px;
+}
+
+ul {
+    margin-bottom: 3px;
+}
+
+#edit_create_container {
+    margin-left: 10px;
+}
+
+#filter_container {
+    margin-left: 10px;
+}
+
+#can_i_eat_more_container {
+    margin-left: 10px;
+}
+
+.invisible {
+    display: none;
+}
+
+.green_text {
+    color: Green;
+}
+
+.red_text {
+    color: Red;
+}

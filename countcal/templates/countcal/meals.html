@@ -1,0 +1,182 @@
+<!doctype html>
+
+{% block content %}
+
+{% for group in user.groups.all %}
+
+{% if group.name == 'peon' %}
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Meals</title>
+
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/jquery.datetimepicker.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.structure.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.theme.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/jtable.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
+    <script src="{% static 'js/jquery-2.2.1.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/moment.js' %}"></script>
+    <script src="{% static 'js/jquery.datetimepicker.min.js' %}"></script>
+    <script src="{% static 'js/jquery.jtable.min.js' %}"></script>
+    <script src="{% static 'js/main-meals.js' %}"></script>
+
+</head>
+
+<body>
+
+
+    <div id="PersonTableContainer"></div>
+
+    <div id="header">
+    <p>{{ user.username }}</p>
+    <p id="now"></p>
+    <p><a href="/countcal/logout/">Logout</a></p>
+    <p>----------</p>
+    </div>
+
+    <div>
+        <ol id="meal_list">
+            {% for meal in object_list %}
+            <li id="meal-{{ meal.id }}" class="meal">
+                <ul>
+                    <li>{{ meal.id }}</li>
+                    <li id="meal_cal_id_{{ meal.id }}" class="meal-cal">{{ meal.cal }} cal.</li>
+                    <li class="item_containing_datetime"><time id="meal_date_id_{{ meal.id }}" class="meal-date" datetime="{{ meal.date | date:'Y-m-d H:i' }}">{{ meal.date | date:"Y-m-d H:i"}}</time></li>
+                    <li id="meal_comment_id_{{ meal.id }}" class="meal-comment">{{ meal.comment }}</li>
+                </ul>
+                <div class="editdelete">
+                    <a id="edit-{{ meal.id }}" class="edit_meal">Edit</a>
+                    <br>
+                    <a id="delete-{{ meal.id }}" class="delete_meal">Delete</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div id="edit_create_container">
+
+        <p>----------</p>
+
+        <h4>Edit meal</h4>
+
+        <input type='hidden' name='csrfmiddlewaretoken' value='WVEdTKlnfYHITpaKCkFFpGdWHem4N3WO' />
+        <p><label>Id:</label>&nbsp;<span id="to_be_edited">Id</span></p>
+        <p><label for="cal_edit_item">Cal:</label> <input id="cal_edit_item" name="cal" type="number" /></p>
+        <p><label for="date_edit_item">Date:</label> <input id="date_edit_item" name="date" type="text" /></p>
+        <p><label for="comment_edit_item">Comment:</label> <input id="comment_edit_item" name="comment" type="text" /></p>
+        <a id="edit_this_item">Edit</a>
+
+        <p>----------</p>
+
+        <h4>Add new meal</h4>
+
+        <input type='hidden' name='csrfmiddlewaretoken' value='WVEdTKlnfYHITpaKCkFFpGdWHem4N3WO' />
+        <p><label for="cal_new_item">Cal:</label> <input id="cal_new_item" name="cal" type="number" /></p>
+        <p><label for="date_new_item">Date:</label> <input id="date_new_item" name="date" type="text" /></p>
+        <p><label for="comment_new_item">Comment:</label> <input id="comment_new_item" name="comment" type="text" /></p>
+        <a id="add_meal">Add</a>
+
+        <p>----------</p>
+
+    </div>
+
+    <div id="filter_container">
+
+        <h4>Filter by date and time</h4>
+
+        <p><label>Date:</label> Between <input id="filter_by_date_1" name="date" type="text" /> and <input id="filter_by_date_2" name="date" type="text" /></p>
+
+        <p><label>Time:</label> Between <input id="filter_by_time_1" name="time" type="text" /> and <input id="filter_by_time_2" name="time" type="text" /></p>
+
+        <a id="filter_meals">Filter</a>
+        <br>
+        <a id="show_all_meals">Show all</a>
+
+        <p>----------</p>
+
+    </div>
+
+    <div id="can_i_eat_more_container">
+
+        <h4>Can I eat more today?</h4>
+        <p><label>My calorie limit for today:</label><input id="cal_limit" name="date" type="text"></p>
+        <p><a id="calculate_daily_cal">Calculate</a></p>
+        <p id="can_i_eat_more" class=""></p>
+
+    </div>
+
+
+</body>
+
+<script>
+    Date.parseDate = function( input, format ){
+        return moment(input,format).toDate();
+    };
+
+    Date.prototype.dateFormat = function( format ){
+        return moment(this).format(format);
+    };
+
+    $(function() {
+        $( "#date_new_item" ).datetimepicker({
+            format:'YYYY-MM-DD HH:mm',
+            formatTime:'HH:mm',
+            formatDate:'YYYY-MM-DD'
+        });
+    });
+
+    $(function() {
+        $( "#date_edit_item" ).datetimepicker({
+            format:'YYYY-MM-DD HH:mm',
+            formatTime:'HH:mm',
+            formatDate:'YYYY-MM-DD'
+        });
+    });
+
+    $(function() {
+        $( "#filter_by_date_1" ).datetimepicker({
+            timepicker:false,
+            format:'YYYY-MM-DD'
+        });
+    });
+
+    $(function() {
+        $( "#filter_by_date_2" ).datetimepicker({
+            timepicker:false,
+            format:'YYYY-MM-DD'
+        });
+    });
+
+    $(function() {
+        $( "#filter_by_time_1" ).datetimepicker({
+            datepicker:false,
+            format:'HH:mm',
+            formatTime:'HH:mm',
+        });
+    });
+
+    $(function() {
+        $( "#filter_by_time_2" ).datetimepicker({
+            datepicker:false,
+            format:'HH:mm',
+            formatTime:'HH:mm',
+        });
+    });
+</script>
+
+{% endif %}
+
+{% endfor %}
+
+{% endblock %}
+
+</html>
+
